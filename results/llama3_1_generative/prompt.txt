@@ -1,4 +1,0 @@
-Annota i riferimenti a persone, luoghi e opere all'interno del testo in input. 
-Riscrivi il testo in input con i riferimenti annotati come nell'esempio seguente: 'Il primo codice della <WORK>Divina Commedia</WORK> di <PER>Dante</PER> è conservato presso la <LOC>Biblioteca Passerini-Landi</LOC> di <LOC>Piacenza</LOC>.'
-Se nessun entità è menzionata, ritorna il testo così com'è.
-Input: 
