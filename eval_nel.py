@@ -16,7 +16,7 @@ def compute_match(annotation1, annotation2, match_type):
     end_pos2 = int(annotation2["end_pos"])
     wiki_id2 = annotation2["identifier"]
     if match_type=="exact":
-        if start_pos1==start_pos2 and wiki_id1 == wiki_id2:
+        if start_pos1==start_pos2 and wiki_id1 == wiki_id2 and end_pos1==end_pos2:
             return True
         else:
             return False

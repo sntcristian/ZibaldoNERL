@@ -26,18 +26,19 @@ def main():
     
     for par in tqdm(paragraphs):
         doc_id, text = par["doc_id"], par["text"]
-        entities = model.predict_entities(text, labels, threshold=args["threshold"])
+        entities = model.predict_entities(text, labels, threshold=params["threshold"])
         for e in entities:
             item = {"doc_id":doc_id, "surface": e["text"], "start_pos":e["start"], "end_pos":e["end"], "type": e["label"]}
             result.append(item)
 
     if not os.path.exists(params["output_dir"]):
         os.makedirs(params["output_dir"])
-
-    with open(os.path.join(params["output_dir"], "output_ner.csv"), "w", encoding="utf-8") as f:
-        dict_writer = csv.DictWriter(f, result[0].keys())
-        dict_writer.writeheader()
-        dict_writer.writerows(result)
+    
+    if len(result)> 0:
+        with open(os.path.join(params["output_dir"], "output_ner.csv"), "w", encoding="utf-8") as f:
+            dict_writer = csv.DictWriter(f, result[0].keys())
+            dict_writer.writeheader()
+            dict_writer.writerows(result)
 
 if __name__ == "__main__":
     main()

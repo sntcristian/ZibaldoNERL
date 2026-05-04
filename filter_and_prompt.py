@@ -74,24 +74,26 @@ def main():
         else:
             paragraph = paragraphs_dict[doc_id]
             text = paragraph["text"]
-            processed_text = text[max(0, start_pos - 500):start_pos] + "<ENT> " + text[start_pos:end_pos] + " <ENT> " +text[end_pos:min(len(text), end_pos + 500)]
+            processed_text = text[max(0, start_pos - 500):start_pos] + "<ENT> " + text[start_pos:end_pos] + " </ENT> " +text[end_pos:min(len(text), end_pos + 500)]
             processed_candidates = process_candidates(item["candidates"], args.n_candidates)
             user_prompt = """
             Analizza attentamente il testo estratto da una pagina dello Zibaldone di pensieri di Giacomo Leopardi.
-            Disambiguate the entity mentioned between the [ENT] tags by selecting the most appropriate Wikidata entity from the list of candidates.    
-            Return the corresponding Wikipedia page title and Wikidata ID of the selected entity in a JSON object formatted as follows:
-        
+            Disambigua l'entità denominata all'interno del testo tra i tag <ENT></ENT> selezionando quando possibile l'entità Wikidata che coincide con quella menzionata nel testo.
+            Se nessuna delle entità coincide con l'entità riferita nel testo, classifica il riferimento come NIL (Not In Links).
+            Restituisci il codice Wikidata dell'entità e la rispettiva label in un oggetto JSON formattato come segue:        
             ```json
             {"wikipedia_page":"", "wikidata_id":""}
             ```
         
-            Make sure to select both the Wikidata ID and the Wikipedia page title from the provided list of candidates.
-            Pay attention that the list of candidates may not include the entity mentioned. If none of the candidates match with high confidence the entity tagged with [ENT], use the string "NIL" as value of the "wikidata_id" key.
+            Se nessuno dei candidati corrisponde all'entità contrassegnata con <ENT>, ritorna questo JSON:
+            ```json
+            {"wikipedia_page":"NIL", "wikidata_id":"NIL"}
+            ```
             ---------------------
-            Input Text:
+            Testo Markato:
             """ + processed_text + """
             ---------------------
-            JSON List of Candidates:
+            Lista di Candidati:
             ```json
             """ + str(processed_candidates) + """ 
             ``` ."""
