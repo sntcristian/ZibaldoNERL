@@ -80,12 +80,12 @@ def load_dataset(paragraphs_path, annotations_path):
 
 def main():
     parser = argparse.ArgumentParser(description="Entity disambiguation with candidate generation")
-    parser.add_argument("--documents_path", type=str, required=True, help="Path to dataset directory")
-    parser.add_argument("--annotations_path", type=str, required=True, help="Path to dataset directory")
+    parser.add_argument("--documents", type=str, required=True, help="Path to dataset directory")
+    parser.add_argument("--annotations", type=str, required=True, help="Path to dataset directory")
     parser.add_argument("--lang", type=str, default="it", help="Language code (e.g., 'it', 'en')")
     parser.add_argument("--output_dir", type=str, default="./results", help="Output directory for results")
     parser.add_argument("--top_k", type=int, default=20, help="Number of top candidates to retrieve")
-    parser.add_argument("--batch_size", type=int, default=4, help="Number of documents in a batch")
+    parser.add_argument("--batch_size", type=int, default=1, help="Number of documents in a batch")
     parser.add_argument('--use_hf_model', type=str_to_bool, default=1)
     parser.add_argument('--models_path', type=str, default="./models")
     parser.add_argument('--device', type=str, default="cuda:0")
@@ -97,7 +97,7 @@ def main():
     else:
         disambiguator = load_disambiguator(models_path=args.models_path, device=args.device)
 
-    all_annotations, all_texts, all_offsets, all_lengths = load_dataset(args.documents_path, args.annotations_path)
+    all_annotations, all_texts, all_offsets, all_lengths = load_dataset(args.documents, args.annotations)
 
     batch_size = args.batch_size
     all_results = []

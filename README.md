@@ -5,19 +5,51 @@
 
 ## Install Requirements
 
-Due to dependency issues, the bi-encoder requires a different huggingface version than LLMs. For this reason, we suggest to create two different conda environments.
+Due to dependency issues, the bi-encoder requires a different huggingface version than LLMs. For this reason, we suggest to create two different conda environments with different Python versions.
 
 ### Create BELA (bi-encoder) environment
 
-```
+```bash
 conda create -n bela39 -y python=3.9 && conda activate bela39
 pip install -r requirements_bela.txt
 ```
 
 ### Create LLM environment
-```
-conda create -n llm -y python=3.10 && conda activate llm
+
+```bash
+conda create -n llm_env -y python=3.11 && conda activate llm_env
 pip install -r requirements_llms.txt
+```
+
+## Running NERL Pipeline
+
+
+### Running Named Entity Recognition
+
+```bash
+conda activate llm_env
+
+python run_gliner.py --documents data/paragraphs_test.csv --output_dir results
+
+```
+
+### Running Candidate Retrieval
+
+```bash
+conda activate bela39
+
+python get_candidates.py --documents data/paragraphs_test.csv --annotations results/output_ner.csv --output_dir ./results/
+
+```
+
+
+# Running Candidate Selection
+
+```bash
+conda activate llm_env
+
+python filter_and_prompt.py --documents data/paragraphs_test.csv --json_f results/candidates_top20_it.json --output_dir 
+
 ```
 
 ## Citation
@@ -39,9 +71,6 @@ pip install -r requirements_llms.txt
 
 
 ## References
-
-* Santini, C. (2024). Zibaldoned: Silver annotations for Entity Disambiguation from Digitalzibaldone (1.0.0) [Data set]. Zenodo. https://doi.org/10.5281/zenodo.13971759
-
 
 * Stoyanova, S. & Johnston, B. (Eds.), *Giacomo Leopardi's Zibaldone di pensieri: a digital research platform*. https://digitalzibaldone.net/
 

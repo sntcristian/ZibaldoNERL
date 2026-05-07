@@ -9,6 +9,7 @@ def main():
     parser.add_argument("--documents", type=str, required=True, help="Path to CSV containing documents.")
     parser.add_argument("--output_dir", type=str, default="./results", help="Path to output directory.")
     parser.add_argument("--threshold", type=float, default=0.9, help="Threshold for GliNER model.")
+    parser.add_argument("--device", type=str, default="cuda", help="Device to run GliNER (cuda or cpu)")
     args = parser.parse_args()
     params = vars(args)
 
@@ -20,7 +21,7 @@ def main():
         paragraphs = list(paragraphs)
     f.close()
 
-    model = GLiNER.from_pretrained("sntcristian/GliNER_ENEIDE")
+    model = GLiNER.from_pretrained("sntcristian/GliNER_ENEIDE", map_location=params["device"])
     
     result = list()
     

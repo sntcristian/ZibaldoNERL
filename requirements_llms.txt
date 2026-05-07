@@ -1,4 +1,4 @@
-gliner==0.2.26
+gliner==0.2.16
 transformers==4.57.6
 torch==2.10.0
 accelerate==1.13.0
