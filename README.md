@@ -43,7 +43,7 @@ python get_candidates.py --documents data/paragraphs_test.csv --annotations resu
 ```
 
 
-# Running Candidate Selection
+### Running Candidate Selection
 
 ```bash
 conda activate llm_env
