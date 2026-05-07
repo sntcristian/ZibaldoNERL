@@ -14,6 +14,7 @@ def main():
     params = vars(args)
 
     labels = ["persona", "luogo", "opera"]
+    labels2tag = {"persona":"PER", "luogo":"LOC", "opera":"WORK"}
 
 
     with open(params["documents"], "r", encoding="utf-8") as f:
@@ -29,7 +30,7 @@ def main():
         doc_id, text = par["doc_id"], par["text"]
         entities = model.predict_entities(text, labels, threshold=params["threshold"])
         for e in entities:
-            item = {"doc_id":doc_id, "surface": e["text"], "start_pos":e["start"], "end_pos":e["end"], "type": e["label"]}
+            item = {"doc_id":doc_id, "surface": e["text"], "start_pos":e["start"], "end_pos":e["end"], "type": labels2tag[e["label"]]}
             result.append(item)
 
     if not os.path.exists(params["output_dir"]):
