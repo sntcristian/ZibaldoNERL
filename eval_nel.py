@@ -1,9 +1,7 @@
 import csv
 import os
+import argparse
 
-
-result_path = "./results"
-annotations_path = "./data/annotations_test.csv"
 
 
 def compute_match(annotation1, annotation2, match_type):
@@ -60,41 +58,46 @@ def eval_nel(data, model_result, match_type):
     f1 = (2 * precision * recall) / (precision + recall)
     return [len(tp), len(fp), len(fn), precision, recall, f1]
 
+def main():
+    parser = argparse.ArgumentParser(description="NER Evaluation script")
+    parser.add_argument("--data", type=str, required=True, help="Path to CSV containing gold annotations.")
+    parser.add_argument("--output_dir", type=str, required=True, help="Path to folder containing NER output")
+    args = parser.parse_args()
+    params = vars(args)
+
+    with open(params["data"], "r", encoding="utf-8") as f2:
+        data = csv.DictReader(f2)
+        data = list(data)
+    f2.close()
+
+    with open(os.path.join(params["output_dir"], "output_nel.csv"), "r", encoding="utf-8") as f3:
+        model_result = csv.DictReader(f3)
+        model_result = list(model_result)
+    f3.close()
 
 
-with open(annotations_path, "r", encoding="utf-8") as f2:
-    data = csv.DictReader(f2)
-    data = list(data)
-f2.close()
-
-with open(os.path.join(result_path, "output_nel.csv"), "r", encoding="utf-8") as f3:
-    model_result = csv.DictReader(f3)
-    model_result = list(model_result)
-f3.close()
+    results_exact = eval_nel(data, model_result, "exact")
+    results_relaxed = eval_nel(data, model_result, "relaxed")
 
 
-results_exact = eval_nel(data, model_result, "exact")
-results_relaxed = eval_nel(data, model_result, "relaxed")
+    with open(os.path.join(params["output_dir"], "results_nel.txt"), "w") as output:
+        output.write("Results with exact match for all classes:\n\n")
+        output.write("True Positives: " + str(results_exact[0]) + "\n")
+        output.write("False Positives: " + str(results_exact[1]) + "\n")
+        output.write("False Negatives: " + str(results_exact[2]) + "\n")
+        output.write("Precision: " + str(results_exact[3]) + "\n")
+        output.write("Recall: " + str(results_exact[4]) + "\n")
+        output.write("F1: " + str(results_exact[5]) + "\n\n")
 
+        output.write("Results with relaxed match for all classes:\n\n")
+        output.write("True Positives: " + str(results_relaxed[0]) + "\n")
+        output.write("False Positives: " + str(results_relaxed[1]) + "\n")
+        output.write("False Negatives: " + str(results_relaxed[2]) + "\n")
+        output.write("Precision: " + str(results_relaxed[3]) + "\n")
+        output.write("Recall: " + str(results_relaxed[4]) + "\n")
+        output.write("F1: " + str(results_relaxed[5]) + "\n\n")
 
-with open(os.path.join(result_path, "results.txt"), "w") as output:
-    output.write("Results with exact match for all classes:\n\n")
-    output.write("True Positives: " + str(results_exact[0]) + "\n")
-    output.write("False Positives: " + str(results_exact[1]) + "\n")
-    output.write("False Negatives: " + str(results_exact[2]) + "\n")
-    output.write("Precision: " + str(results_exact[3]) + "\n")
-    output.write("Recall: " + str(results_exact[4]) + "\n")
-    output.write("F1: " + str(results_exact[5]) + "\n\n")
-
-    output.write("Results with relaxed match for all classes:\n\n")
-    output.write("True Positives: " + str(results_relaxed[0]) + "\n")
-    output.write("False Positives: " + str(results_relaxed[1]) + "\n")
-    output.write("False Negatives: " + str(results_relaxed[2]) + "\n")
-    output.write("Precision: " + str(results_relaxed[3]) + "\n")
-    output.write("Recall: " + str(results_relaxed[4]) + "\n")
-    output.write("F1: " + str(results_relaxed[5]) + "\n\n")
-
-output.close()
+    output.close()
 
 
 
